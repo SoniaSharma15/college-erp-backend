@@ -7,7 +7,7 @@ import {allowRoles} from "../../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, allowRoles("ADMIN"), createCourse);
-router.get("/", authMiddleware, allowRoles("ADMIN"), getCourses);
+router.post("/", authMiddleware, allowRoles("COLLEGE_ADMIN"), createCourse);
+router.get("/", authMiddleware, allowRoles("COLLEGE_ADMIN"), getCourses);
 
 export default router;

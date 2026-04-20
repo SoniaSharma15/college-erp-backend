@@ -11,12 +11,12 @@ import {allowRoles} from "../../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, allowRoles("ADMIN"), createBranch);
+router.post("/", authMiddleware, allowRoles("COLLEGE_ADMIN"), createBranch);
 
 router.get(
   "/:courseId",
   authMiddleware,
-  allowRoles("ADMIN"),
+  allowRoles("COLLEGE_ADMIN"),
   getBranchesByCourse
 );
 
