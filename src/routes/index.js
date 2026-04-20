@@ -11,8 +11,8 @@ const router = Router();
 router.use("/auth", authRoutes);
 router.use("/college", collegeRoutes);
 
-router.use("/api/courses", courseRoutes);
-router.use("/api/branches", branchRoutes);
+router.use("/courses", courseRoutes);
+router.use("/branches", branchRoutes);
 
 
 // test route
