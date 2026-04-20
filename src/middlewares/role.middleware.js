@@ -1,6 +1,8 @@
 export const allowRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    const userRoles = req.user.roles;
+
+    // 🔥 FIX: support both formats
+    const userRoles = req.user.roles || [req.user.role];
 
     const hasRole = userRoles.some(role =>
       allowedRoles.includes(role)

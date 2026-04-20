@@ -1,5 +1,3 @@
-// staff.model.js
-
 import mongoose from "mongoose";
 
 const documentSchema = new mongoose.Schema(
@@ -13,16 +11,18 @@ const documentSchema = new mongoose.Schema(
 
 const staffSchema = new mongoose.Schema(
   {
-    // 🔥 REQUIRED (CREATE TIME)
+    // 🔥 BASIC INFO
     name: {
       type: String,
       required: true,
+      trim: true,
     },
 
     email: {
       type: String,
       required: true,
-      unique: true,
+      lowercase: true,
+      trim: true,
     },
 
     phone: {
@@ -46,7 +46,7 @@ const staffSchema = new mongoose.Schema(
       required: true,
     },
 
-    // 🔥 OPTIONAL (LATER ASSIGN)
+    // 🔥 RELATIONS
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
@@ -56,13 +56,15 @@ const staffSchema = new mongoose.Schema(
     collegeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "College",
-      default: null, // ❗ FIXED (NOT REQUIRED)
+      required: true,
+      index: true, // 🔥 performance + filtering
     },
 
-    // 🔥 AUTO GENERATED
+    // 🔥 EMPLOYEE ID (college-wise unique)
     employeeId: {
       type: String,
-      unique: true,
+      required: true,
+      trim: true,
     },
 
     joiningDate: {
@@ -70,7 +72,6 @@ const staffSchema = new mongoose.Schema(
       default: Date.now,
     },
 
-    // 🔥 OPTIONAL DOCUMENTS
     documents: {
       type: [documentSchema],
       default: [],
@@ -81,9 +82,26 @@ const staffSchema = new mongoose.Schema(
       default: true,
     },
 
-    lastLogin: Date,
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Staff", staffSchema);
+
+// 🔥 COMPOUND UNIQUE INDEXES (FINAL)
+staffSchema.index(
+  { email: 1, collegeId: 1 },
+  { unique: true }
+);
+
+staffSchema.index(
+  { employeeId: 1, collegeId: 1 },
+  { unique: true }
+);
+
+
+// 🔥 SAFE EXPORT (avoid model overwrite error in dev)
+export default mongoose.models.Staff || mongoose.model("Staff", staffSchema);

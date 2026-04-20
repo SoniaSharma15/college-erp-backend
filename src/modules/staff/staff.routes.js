@@ -13,31 +13,93 @@ import {
   removeDocument,
 } from "./staff.controller.js";
 
+import { authMiddleware } from "../../middlewares/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
+
 const router = Router();
 
-// AUTH
-router.post("/register", registerStaff);
+// ================= AUTH =================
+
+// ❗ login public rahega
 router.post("/login", loginStaff);
 
-// GET
-router.get("/", getAllStaff);
-router.get("/emp/:empId", getByEmployeeId);
+// ================= PROTECTED =================
 
-// UPDATE
-router.put("/:id", updateStaff);
+// 🔥 CREATE STAFF (only COLLEGE_ADMIN)
+router.post(
+  "/register",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  registerStaff
+);
 
-// PASSWORD
-router.put("/change-password/:id", changePassword);
-router.put("/reset-password/:id", resetPassword);
+// 🔥 GET STAFF (college-wise)
+router.get(
+  "/",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  getAllStaff
+);
 
-// STATUS
-router.put("/toggle/:id", toggleStatus);
+router.get(
+  "/emp/:empId",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  getByEmployeeId
+);
 
-// DOCUMENT
-router.post("/document/:id", addDocument);
-router.delete("/document/:id/:docId", removeDocument);
+// 🔥 UPDATE
+router.put(
+  "/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  updateStaff
+);
 
-// DELETE
-router.delete("/:id", deleteStaff);
+// 🔥 PASSWORD
+router.put(
+  "/change-password/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  changePassword
+);
+
+router.put(
+  "/reset-password/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  resetPassword
+);
+
+// 🔥 STATUS
+router.put(
+  "/toggle/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  toggleStatus
+);
+
+// 🔥 DOCUMENT
+router.post(
+  "/document/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  addDocument
+);
+
+router.delete(
+  "/document/:id/:docId",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  removeDocument
+);
+
+// 🔥 DELETE
+router.delete(
+  "/:id",
+  authMiddleware,
+  allowRoles("COLLEGE_ADMIN"),
+  deleteStaff
+);
 
 export default router;
